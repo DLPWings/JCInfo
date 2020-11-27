@@ -1,5 +1,5 @@
 # Jet Central Info
-Jet Central Telemetry display for Jeti DC/DS 16.
+Jet Central Telemetry display for All Jeti Transmitters.
 * Requires updated Jeti telemetry module from Jet Central 
 
 # Instalation:
