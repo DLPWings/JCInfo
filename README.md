@@ -15,3 +15,5 @@ You can enable "Demo Mode" in App settings and simulate values with:
 - [P6] RPM
 - [P7] EGT
 - [P8] ECU Batt
+
+![Alt text](JCInfo.png?raw=true "Screenshot")
