@@ -21,4 +21,9 @@ You can enable "Demo Mode" in App settings and simulate values with:
 - [P8] ECU Batt
 
 # Screenshots:
-![Alt text](JCInfo.png?raw=true "Screenshot")
+![Screenshot 1](JCInfo1.png?raw=true "Screenshot1")
+![Screenshot 2](JCInfo2.png?raw=true "Screenshot2")
+![Screenshot 3](JCInfo3.png?raw=true "Screenshot3")
+![Screenshot 4](JCInfo3.png?raw=true "Screenshot4")
+![Screenshot 5](JCInfo3.png?raw=true "Screenshot5")
+![Screenshot 6](JCInfo3.png?raw=true "Screenshot6")
