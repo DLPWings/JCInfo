@@ -1,6 +1,9 @@
 # Jet Central Info
-Jet Central Telemetry display for All Jeti Transmitters.
-* Requires updated Jeti telemetry module from Jet Central 
+Jet Central Telemetry display for all Jeti Transmitters.
+
+# Requisites:
+* Updated Jeti Telemetry Module from Jet Central
+* Transmitter firmware version 4.2 LUA or above 
 
 # Instalation:
 - Download JCInfo.lc to Apps folder in your transmitter
@@ -17,4 +20,5 @@ You can enable "Demo Mode" in App settings and simulate values with:
 - [P7] EGT
 - [P8] ECU Batt
 
+# Screenshots:
 ![Alt text](JCInfo.png?raw=true "Screenshot")
