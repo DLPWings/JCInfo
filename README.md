@@ -1,6 +1,6 @@
 # Jet Central Info
-Jet Central Telemetry display for Jeti DC/DS 16 
-Requires updated Jeti telemetry module from Jet Central 
+Jet Central Telemetry display for Jeti DC/DS 16.
+* Requires updated Jeti telemetry module from Jet Central 
 
 # Instalation:
 - Download JCInfo.lc to Apps folder in your transmitter
