@@ -21,9 +21,14 @@ You can enable "Demo Mode" in App settings and simulate values with:
 - [P8] ECU Batt
 
 # Screenshots:
-![Screenshot 1](JCInfo1.png?raw=true "Screenshot1")
-![Screenshot 2](JCInfo2.png?raw=true "Screenshot2")
-![Screenshot 3](JCInfo3.png?raw=true "Screenshot3")
-![Screenshot 4](JCInfo4.png?raw=true "Screenshot4")
-![Screenshot 5](JCInfo5.png?raw=true "Screenshot5")
-![Screenshot 6](JCInfo6.png?raw=true "Screenshot6")
+![Screenshot 1](img/Screen001.bmp?raw=true "Screenshot1")
+![Screenshot 1](img/Screen002.bmp?raw=true "Screenshot2")
+![Screenshot 1](img/Screen003.bmp?raw=true "Screenshot3")
+![Screenshot 1](img/Screen004.bmp?raw=true "Screenshot4")
+![Screenshot 1](img/Screen005.bmp?raw=true "Screenshot5")
+![Screenshot 1](img/Screen006.bmp?raw=true "Screenshot6")
+![Screenshot 1](img/Screen007.bmp?raw=true "Screenshot7")
+![Screenshot 1](img/Screen008.bmp?raw=true "Screenshot8")
+![Screenshot 1](img/Screen009.bmp?raw=true "Screenshot9")
+![Screenshot 1](img/Screen010.bmp?raw=true "Screenshot10")
+![Screenshot 1](img/Screen011.bmp?raw=true "Screenshot11")
