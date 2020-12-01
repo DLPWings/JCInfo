@@ -5,7 +5,7 @@ Jet Central Telemetry display for all Jeti Transmitters.
 * Updated Jeti Telemetry Module from Jet Central
 * Transmitter firmware version 4.2 LUA or above 
 
-# Instalation:
+# Installation:
 - Download JCInfo.lc to Apps folder in your transmitter
 - Go to: Menu > Applications > User Applications
 - Press [F3][+] and select JCInfo.lc
