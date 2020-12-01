@@ -1,4 +1,5 @@
---[[ MIT License
+--[[ 
+MIT License
 
 Copyright (c) [2020] [Juan de la Parra - DLP Wings]
 
@@ -37,10 +38,12 @@ local alternateEGT = true
 local alternateBattV = true
 local alternateBatt = true
 local demoModeCtrl
-local alternateRPMCtrl
-local alternateEGTCtrl
-local alternateBattVCtrl
-local alternateBattCtrl
+
+local resetReminder
+local resetReminderFile
+local resetDone = false
+
+local booleanSelect = {"Yes", "No"}
 
 
 --Timers
@@ -49,7 +52,7 @@ local alternating=0
 --Alarm
 local fuelAlarmFile
 local fuelAlarmPlayed = false
-local alarmVoiceValue = true
+local alarmVoice = true
 local fuelAlarmArmed = false
 local lastAlarm = 0
 --Telemetry Variables
@@ -87,15 +90,26 @@ local function fuelAlarmRepeatChanged(value)
     system.pSave("FuelAlarmRepeat",fuelAlarmRepeat)
 end
 
+
+
 local function fuelAlarmFileChanged(value)
 	fuelAlarmFile=value
 	system.pSave("FuelAlarmFile",value)
 end
 
+local function resetReminderFileChanged(value)
+	resetReminderFile=value
+	system.pSave("ResetReminderFile",value)
+end
+
 local function alarmVoiceValueChanged(value)
-    alarmVoiceValue = not value
-    form.setValue(alarmVoiceValueCtrl,alarmVoiceValue)
-    if alarmVoiceValue then system.pSave("AlarmVoiceValue",1) else system.pSave("AlarmVoiceValue",0) end
+    alarmVoice = value
+    system.pSave("AlarmVoice",alarmVoice)
+end
+
+local function resetReminderChanged(value)
+    resetReminder = value
+    system.pSave("ResetReminder",resetReminder)
 end
 
 local function alternatingDelayChanged(value)
@@ -110,27 +124,23 @@ local function demoModeChanged(value)
 end
 
 local function alternateRPMChanged(value)
-    alternateRPM = not value
-    form.setValue(alternateRPMCtrl,alternateRPM)
-    if alternateRPM then system.pSave("AlternateRPM",1) else system.pSave("AlternateRPM",0) end
+    alternateRPM = value
+    system.pSave("AlternateRPM",alternateRPM)
 end
 
 local function alternateEGTChanged(value)
-    alternateEGT = not value
-    form.setValue(alternateEGTCtrl,alternateEGT)
-    if alternateEGT then system.pSave("AlternateEGT",1) else system.pSave("AlternateEGT",0) end
+    alternateEGT = value
+    system.pSave("AlternateEGT",alternateEGT)
 end
 
 local function alternateBattVChanged(value)
-    alternateBattV = not value
-    form.setValue(alternateBattVCtrl,alternateBattV)
-    if alternateBattV then system.pSave("AlternateBattV",1) else system.pSave("AlternateBattV",0) end
+    alternateBattV = value
+    system.pSave("AlternateBattV",alternateBattV)
 end
 
 local function alternateBattChanged(value)
-    alternateBatt = not value
-    form.setValue(alternateBattCtrl,alternateBatt)
-    if alternateBatt then system.pSave("AlternateBatt",1) else system.pSave("AlternateBatt",0) end
+    alternateBatt = value
+    system.pSave("AlternateBatt",alternateBatt)
 end
 
 local function comma_value(amount)
@@ -212,45 +222,57 @@ local function initSettingsForm(formID)
             end 
         end 
     end
-    --form.addSpacer(100,10)
-    --form.addLabel({label="Jet Central Sensor",font=FONT_BOLD})
+
     -- sensor select
     form.addRow(2)
     form.addLabel({label="Select sensor",width=120})
     form.addSelectbox (list, curIndex,true,sensorChanged,{width=190})
 
      --Fuel Warning
-    form.addSpacer(100,10)    
+    form.addSpacer(100,10)
+    form.addLabel({label="Alarms",font=FONT_BOLD})  
+    form.addRow(3)
+    form.addLabel({label="Fuel warning  [%]", width=130})
+    form.addLabel({label="(0=Disabled)", width=80, font=FONT_MINI})
+    form.addIntbox(fuelAlarm,0,99,30,0,1,fuelAlarmChanged) 
     form.addRow(2)
-    form.addLabel({label="Fuel warning  [%]", width=190})
-    form.addIntbox(fuelAlarm,0,99,30,0,1,fuelAlarmChanged,{width=120}) 
+    form.addLabel({label="    File",width=190})
+    form.addAudioFilebox(fuelAlarmFile or "",fuelAlarmFileChanged)
     form.addRow(2)
-    form.addLabel({label="File",width=190})
-    form.addAudioFilebox(fuelAlarmFile or "",fuelAlarmFileChanged,{width=120})
-    form.addRow(2)
-    form.addLabel({label="Repeat every [s]", width=190})
+    form.addLabel({label="    Repeat every [s]", width=190})
     form.addIntbox(fuelAlarmRepeat/1000,0,60,10,0,1,fuelAlarmRepeatChanged,{width=120})
     form.addRow(2)
-    form.addLabel({label="Announce value by voice", width=274})
-    alarmVoiceValueCtrl = form.addCheckbox(alarmVoiceValue,alarmVoiceValueChanged)    
+    form.addLabel({label="    Announce value by voice", width=240})
+    form.addSelectbox (booleanSelect, alarmVoice,false,alarmVoiceValueChanged)
+    form.addRow(2)
+    form.addLabel({label="Fuel consumption reset reminder", width=240})
+    form.addSelectbox (booleanSelect, resetReminder,false,resetReminderChanged)
+    form.addRow(2)
+    form.addLabel({label="    File",width=190})
+    form.addAudioFilebox(resetReminderFile or "",resetReminderFileChanged)    
 
     form.addSpacer(100,10)
     form.addLabel({label="Alternating display",font=FONT_BOLD})
+    
     form.addRow(2)
-    form.addLabel({label="Delay [s]", width=190})
-    form.addIntbox(alternatingDelay/100,10,100,30,1,1,alternatingDelayChanged,{width=120})    
+    form.addLabel({label="Show RPM", width=190})
+    form.addSelectbox (booleanSelect, alternateRPM,false,alternateRPMChanged)
+
     form.addRow(2)
-    form.addLabel({label="RPM", width=274})
-    alternateRPMCtrl = form.addCheckbox(alternateRPM,alternateRPMChanged)
+    form.addLabel({label="Show EGT [°C]", width=190})
+    form.addSelectbox (booleanSelect, alternateEGT,false,alternateEGTChanged)
+    
     form.addRow(2)
-    form.addLabel({label="EGT", width=274})
-    alternateEGTCtrl = form.addCheckbox(alternateEGT,alternateEGTChanged)
-    form.addRow(2)
-    form.addLabel({label="ECU batt [V]", width=274})
-    alternateBattVCtrl = form.addCheckbox(alternateBattV,alternateBattVChanged)
+    form.addLabel({label="Show ECU batt [V]", width=190})
+    form.addSelectbox (booleanSelect, alternateBattV,false,alternateBattVChanged)
+
     form.addRow(2)    
-    form.addLabel({label="ECU batt [%]", width=274})
-    alternateBattCtrl = form.addCheckbox(alternateBatt,alternateBattChanged)
+    form.addLabel({label="Show ECU batt [%]", width=190})
+    form.addSelectbox (booleanSelect, alternateBatt,false,alternateBattChanged)
+    
+    form.addRow(2)
+    form.addLabel({label="Change display every [s]", width=190})
+    form.addIntbox(alternatingDelay/100,10,100,30,1,1,alternatingDelayChanged,{width=120})
 
     --Demo Mode
     form.addSpacer(100,10)
@@ -265,7 +287,7 @@ end
 local function printSmallDisplay(width, height)
     lcd.drawText(2,8,decodeStatus(StatusCode),FONT_BOLD)
     lcd.drawText(2,30,decodeMessage(MessageCode),FONT_NORMAL)
-    lcd.drawImage(1,51,":graph")
+    --lcd.drawImage(1,51,":graph")
 end
 
 local function printDoubleDisplay(width, height)
@@ -288,11 +310,23 @@ local function printDoubleDisplay(width, height)
             MessageCode = 13
         end
     end
+
     if(StatusCode == 56 and FuelValue > fuelAlarm) then fuelAlarmArmed = true end
     if(StatusCode == 10) then 
         fuelAlarmArmed = false 
         fuelAlarmPlayed = false
+        resetDone = false
     end  
+
+    if(StatusCode == 56 and resetReminder == 1) then
+        if (resetDone == false and FuelValue < 95) then
+            system.messageBox("Reset fuel consumption!",5)
+            if resetReminderFile ~= "" then system.playFile(resetReminderFile,AUDIO_QUEUE) end
+            resetDone = true
+        else
+            resetDone = true
+        end
+    end
 
     --Fuel gauge  
     local fuelLbl = string.format("%d", FuelValue)
@@ -325,16 +359,17 @@ local function printDoubleDisplay(width, height)
         lcd.drawText(2,0,"ECU Batt",FONT_MINI)
         lcd.drawText(2,10,lbl,FONT_BIG)
     end
-
-    if(fuelAlarmArmed and FuelValue <= fuelAlarm) then
-        if fuelAlarmRepeat == 0 and fuelAlarmPlayed then 
-            --Prevent further repetitions
-        elseif system.getTimeCounter() - lastAlarm > fuelAlarmRepeat then
-            system.playFile(fuelAlarmFile,AUDIO_QUEUE)
-            if alarmVoiceValue then system.playNumber(FuelValue,0,"%") end
-            system.messageBox("Warning: LOW FUEL",3)
-            lastAlarm = system.getTimeCounter()
-            fuelAlarmPlayed = true
+    if fuelAlarm ~= 0 then 
+        if(fuelAlarmArmed and FuelValue <= fuelAlarm) then
+            if fuelAlarmRepeat == 0 and fuelAlarmPlayed then 
+                --Prevent further repetitions
+            elseif system.getTimeCounter() - lastAlarm > fuelAlarmRepeat then
+                if fuelAlarmFile ~= "" then system.playFile(fuelAlarmFile,AUDIO_QUEUE) end
+                if alarmVoice then system.playNumber(FuelValue,0,"%") end
+                system.messageBox("Warning: LOW FUEL",3)
+                lastAlarm = system.getTimeCounter()
+                fuelAlarmPlayed = true
+            end
         end
     end
     
@@ -344,10 +379,11 @@ end
 local function init()
     -- sensor id
     sensorId = system.pLoad("SensorId",0)
+    
     if sensorId == 0 then
         local available = system.getSensors()
         for index,sensor in ipairs(available) do
-            if((sensor.id & 0xFFFF) == 41996 ) then -- Fill default sensor ID
+            if((sensor.id & 0xFFFF) == 0xA40C and (sensor.id & 0xFF0000) ~= 0) then -- Fill default sensor ID
                 sensorId = sensor.id
                 break
             end 
@@ -362,15 +398,12 @@ local function init()
     if demoMode == 0 then demoMode = false else demoMode = true end
 
     alternateRPM = system.pLoad("AlternateRPM",1)
-    if alternateRPM == 0 then alternateRPM = false else alternateRPM = true end      
     alternateEGT = system.pLoad("AlternateEGT",1)
-    if alternateEGT == 0 then alternateEGT = false else alternateEGT = true end  
     alternateBattV = system.pLoad("AlternateBattV",1)
-    if alternateBattV == 0 then alternateBattV = false else alternateBattV = true end    
     alternateBatt = system.pLoad("AlternateBatt",1)
-    if alternateBatt == 0 then alternateBatt = false else alternateBatt = true end
-    alarmVoiceValue = system.pLoad("AlarmVoiceValue", 1)
-    if alarmVoiceValue == 0 then alarmVoiceValue = false else alarmVoiceValue = true end
+    alarmVoice = system.pLoad("AlarmVoice", 1)
+    resetReminder = system.pLoad("ResetReminder",1)
+    resetReminderFile = system.pLoad("ResetReminderFile","")
 
     alternatingDelay = system.pLoad("AlternatingDelay",3000)
 
@@ -397,10 +430,6 @@ local function loop()
     sensor = system.getSensorByID(sensorId,3)
     if( sensor and sensor.valid ) then ECUVValue = sensor.value else ECUVValue = 0 end
 
-    -- Pump
-    --sensor = system.getSensorByID(sensorId,4)
-    --if( sensor and sensor.valid ) then PumpValue = sensor.value else PumpValue = 0 end
-
     -- EcuBatt
     sensor = system.getSensorByID(sensorId,5)
     if( sensor and sensor.valid ) then EcuBattValue = sensor.value else EcuBattValue = 0 end
@@ -408,10 +437,6 @@ local function loop()
     -- Fuel
     sensor = system.getSensorByID(sensorId,6)
     if( sensor and sensor.valid ) then FuelValue = sensor.value else FuelValue = 0 end
-
-    -- Speed
-    --sensor = system.getSensorByID(sensorId,7)
-    --if( sensor and sensor.valid ) then SpeedValue = sensor.value else SpeedValue = 0 end
 
     -- Status
     sensor = system.getSensorByID(sensorId,8)
@@ -438,4 +463,4 @@ local function loop()
     
     collectgarbage()
 end
-return {init=init, loop=loop, author="DLPWings", version="1.00",name="Jet Central Info"}
+return {init=init, loop=loop, author="DLPWings", version="1.10",name="Jet Central Info"}
