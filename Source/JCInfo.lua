@@ -451,16 +451,16 @@ local function loop()
         alternating = alternating +1
         if alternating > 4 then alternating = 0 end
 
-        if alternating == 1 and not alternateRPM then alternating = 2 end
-        if alternating == 2 and not alternateEGT then alternating = 3 end
-        if alternating == 3 and not alternateBattV then alternating = 4 end
-        if alternating == 4 and not alternateBatt then alternating = 0 end
-        if alternating == 0 and alternateRPM then alternating = 1 end
-        if alternating == 0 and alternateEGT then alternating = 2 end
-        if alternating == 0 and alternateBattV then alternating = 3 end
-        if alternating == 0 and alternateBatt then alternating = 4 end
+        if alternating == 1 and alternateRPM == 2 then alternating = 2 end
+        if alternating == 2 and alternateEGT == 2 then alternating = 3 end
+        if alternating == 3 and alternateBattV == 2 then alternating = 4 end
+        if alternating == 4 and alternateBatt == 2 then alternating = 0 end
+        if alternating == 0 and alternateRPM == 1 then alternating = 1 end
+        if alternating == 0 and alternateEGT == 1 then alternating = 2 end
+        if alternating == 0 and alternateBattV == 1 then alternating = 3 end
+        if alternating == 0 and alternateBatt ==1 then alternating = 4 end
     end
     
     collectgarbage()
 end
-return {init=init, loop=loop, author="DLPWings", version="1.10",name="Jet Central Info"}
+return {init=init, loop=loop, author="DLPWings", version="1.11",name="Jet Central Info"}
