@@ -330,6 +330,11 @@ local function printDoubleDisplay(width, height)
 
     --Fuel gauge  
     local fuelLbl = string.format("%d", FuelValue)
+    if FuelValue == -1 then
+        fuelLbl = "0"
+    end
+
+    
     lcd.drawText(148 - lcd.getTextWidth(FONT_MAXI,fuelLbl),5 ,fuelLbl,FONT_MAXI)
     lcd.drawText(148 - lcd.getTextWidth(FONT_MINI,"FUEL %"),0,"FUEL %",FONT_MINI)
 
@@ -359,7 +364,7 @@ local function printDoubleDisplay(width, height)
         lcd.drawText(2,0,"ECU Batt",FONT_MINI)
         lcd.drawText(2,10,lbl,FONT_BIG)
     end
-    if fuelAlarm ~= 0 then 
+    if (fuelAlarm ~= 0 and FuelValue ~= -1) then 
         if(fuelAlarmArmed and FuelValue <= fuelAlarm) then
             if fuelAlarmRepeat == 0 and fuelAlarmPlayed then 
                 --Prevent further repetitions
@@ -436,7 +441,7 @@ local function loop()
 
     -- Fuel
     sensor = system.getSensorByID(sensorId,6)
-    if( sensor and sensor.valid ) then FuelValue = sensor.value else FuelValue = 0 end
+    if( sensor and sensor.valid ) then FuelValue = sensor.value else FuelValue = -1 end
 
     -- Status
     sensor = system.getSensorByID(sensorId,8)
@@ -448,7 +453,7 @@ local function loop()
  
     if newTime-lastTime > alternatingDelay then
         lastTime = newTime
-        alternating = alternating +1
+        alternating = alternating +14
         if alternating > 4 then alternating = 0 end
 
         if alternating == 1 and alternateRPM == 2 then alternating = 2 end
@@ -463,4 +468,4 @@ local function loop()
     
     collectgarbage()
 end
-return {init=init, loop=loop, author="DLPWings", version="1.11",name="Jet Central Info"}
+return {init=init, loop=loop, author="DLPWings", version="1.12",name="Jet Central Info"}
