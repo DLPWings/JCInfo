@@ -453,7 +453,7 @@ local function loop()
  
     if newTime-lastTime > alternatingDelay then
         lastTime = newTime
-        alternating = alternating +14
+        alternating = alternating + 1
         if alternating > 4 then alternating = 0 end
 
         if alternating == 1 and alternateRPM == 2 then alternating = 2 end
@@ -468,4 +468,4 @@ local function loop()
     
     collectgarbage()
 end
-return {init=init, loop=loop, author="DLPWings", version="1.12",name="Jet Central Info"}
+return {init=init, loop=loop, author="DLPWings", version="1.13",name="Jet Central Info"}
